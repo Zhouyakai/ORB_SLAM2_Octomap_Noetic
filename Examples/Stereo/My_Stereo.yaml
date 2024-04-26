@@ -24,7 +24,7 @@ Camera.height: 480
 Camera.fps: 20.0
 
 # stereo baseline times fx
-Camera.bf: 44.810089858
+Camera.bf: 89.62
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 1
@@ -80,7 +80,7 @@ RIGHT.P:  !!opencv-matrix
    rows: 3
    cols: 4
    dt: d
-   data: [448.1008985853343, 0.0, 376.5, -44.81008985853343, 0.0, 448.1008985853343, 240.5, 0.0, 0.0, 0.0, 1.0, 0.0]
+   data: [448.1008985853343, 0.0, 376.5, -89.62, 0.0, 448.1008985853343, 240.5, 0.0, 0.0, 0.0, 1.0, 0.0]
 
 #--------------------------------------------------------------------------------------------
 # ORB Parameters

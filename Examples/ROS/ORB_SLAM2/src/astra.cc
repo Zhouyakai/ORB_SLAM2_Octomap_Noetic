@@ -136,57 +136,57 @@ void ImageGrabber::GrabRGBD(const sensor_msgs::ImageConstPtr& msgRGB,const senso
 	   //  Tcw = mpSLAM->TrackRGBD(cv_ptrRGB->image,cv_ptrD->image,cv_ptrRGB->header.stamp.toSec());
     if (!Tcw.empty())
 	{
-					cv::Mat Twc =Tcw.inv();
-					cv::Mat RWC= Twc.rowRange(0,3).colRange(0,3);  
-					cv::Mat tWC=  Twc.rowRange(0,3).col(3);
+        cv::Mat Twc =Tcw.inv();
+        cv::Mat RWC= Twc.rowRange(0,3).colRange(0,3);  
+        cv::Mat tWC=  Twc.rowRange(0,3).col(3);
 
-					Eigen::Matrix<double,3,3> eigMat ;
-					eigMat <<RWC.at<float>(0,0),RWC.at<float>(0,1),RWC.at<float>(0,2),
-									RWC.at<float>(1,0),RWC.at<float>(1,1),RWC.at<float>(1,2),
-									RWC.at<float>(2,0),RWC.at<float>(2,1),RWC.at<float>(2,2);
-					Eigen::Quaterniond q(eigMat);
- 
-				 geometry_msgs::PoseStamped tcw_msg; 					
-                 tcw_msg.pose.position.x=tWC.at<float>(0);
-                 tcw_msg.pose.position.y=tWC.at<float>(1);			 
-                 tcw_msg.pose.position.z=tWC.at<float>(2);
-				 
-				tcw_msg.pose.orientation.x=q.x();
-				tcw_msg.pose.orientation.y=q.y();
-				tcw_msg.pose.orientation.z=q.z();
-				tcw_msg.pose.orientation.w=q.w();
-				   
-				  std_msgs::Header header ;
-				  header.stamp =msgRGB->header.stamp;
-				  header.seq = msgRGB->header.seq;
-				  header.frame_id="world";
- 
-				 tcw_msg.header=header;
-				 
-				 // odometry information
-				 nav_msgs::Odometry odom_msg;
-				odom_msg.pose.pose.position.x=tWC.at<float>(0);
-                 odom_msg.pose.pose.position.y=tWC.at<float>(1);			 
-                 odom_msg.pose.pose.position.z=tWC.at<float>(2);
-				 
-				odom_msg.pose.pose.orientation.x=q.x();
-				odom_msg.pose.pose.orientation.y=q.y();
-				odom_msg.pose.pose.orientation.z=q.z();
-				odom_msg.pose.pose.orientation.w=q.w();
-				
-				odom_msg.header=header;
-				odom_msg.child_frame_id="base_link"; 
-				
-				 camerapath.header =header;
-				 camerapath.poses.push_back(tcw_msg);
-				  pub_odom.publish(odom_msg);	  
-				 pub_camerapath.publish(camerapath);  //相机轨迹
-				 if( isKeyFrame)
-				{
-					pub_tcw.publish(tcw_msg);	                      //Tcw位姿信息
-					pub_rgb.publish(msgRGB);
-					pub_depth.publish(msgD);
-				}
+        Eigen::Matrix<double,3,3> eigMat ;
+        eigMat <<RWC.at<float>(0,0),RWC.at<float>(0,1),RWC.at<float>(0,2),
+                        RWC.at<float>(1,0),RWC.at<float>(1,1),RWC.at<float>(1,2),
+                        RWC.at<float>(2,0),RWC.at<float>(2,1),RWC.at<float>(2,2);
+        Eigen::Quaterniond q(eigMat);
+
+        geometry_msgs::PoseStamped tcw_msg;
+        tcw_msg.pose.position.x = tWC.at<float>(0);
+        tcw_msg.pose.position.y = tWC.at<float>(1);
+        tcw_msg.pose.position.z = tWC.at<float>(2);
+
+        tcw_msg.pose.orientation.x = q.x();
+        tcw_msg.pose.orientation.y = q.y();
+        tcw_msg.pose.orientation.z = q.z();
+        tcw_msg.pose.orientation.w = q.w();
+
+        std_msgs::Header header;
+        header.stamp = msgRGB->header.stamp;
+        header.seq = msgRGB->header.seq;
+        header.frame_id = "world";
+
+        tcw_msg.header = header;
+
+        // odometry information
+        nav_msgs::Odometry odom_msg;
+        odom_msg.pose.pose.position.x = tWC.at<float>(0);
+        odom_msg.pose.pose.position.y = tWC.at<float>(1);
+        odom_msg.pose.pose.position.z = tWC.at<float>(2);
+
+        odom_msg.pose.pose.orientation.x = q.x();
+        odom_msg.pose.pose.orientation.y = q.y();
+        odom_msg.pose.pose.orientation.z = q.z();
+        odom_msg.pose.pose.orientation.w = q.w();
+
+        odom_msg.header = header;
+        odom_msg.child_frame_id = "world";
+
+        camerapath.header = header;
+        camerapath.poses.push_back(tcw_msg);
+        pub_odom.publish(odom_msg);
+        pub_camerapath.publish(camerapath); // 相机轨迹
+        if (isKeyFrame)
+        {
+            pub_tcw.publish(tcw_msg); // Tcw位姿信息
+            pub_rgb.publish(msgRGB);
+            pub_depth.publish(msgD);
+        }
 	}
 	else
 	{

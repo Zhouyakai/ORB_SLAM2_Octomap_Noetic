@@ -131,8 +131,8 @@ int main(int argc, char **argv)
 
     ros::NodeHandle nh;
 
-    message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/indemind/left/image_raw", 1);
-    message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/indemind/right/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> left_sub(nh, "/camera/left/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> right_sub(nh, "/camera/right/image_raw", 1);
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> sync_pol;
     message_filters::Synchronizer<sync_pol> sync(sync_pol(10), left_sub,right_sub);
     sync.registerCallback(boost::bind(&ImageGrabber::GrabStereo,&igb,_1,_2));
@@ -267,7 +267,7 @@ void ImageGrabber::GrabStereo(const sensor_msgs::Image::ConstPtr msgLeft,const s
 				odom_msg.pose.pose.orientation.w=q.w();
 				
 				odom_msg.header=header;
-				odom_msg.child_frame_id="base_link"; 
+				odom_msg.child_frame_id="world"; 
 // 				 // 发布TF 变换
 // 				static tf::TransformBroadcaster odom_broadcaster;  //定义tf对象
 // 				geometry_msgs::TransformStamped odom_trans;  //创建一个tf发布需要使用的TransformStamped类型消息
